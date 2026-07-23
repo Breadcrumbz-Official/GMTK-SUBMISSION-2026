@@ -50,3 +50,6 @@ TagManager:
   - name: Player
     uniqueID: 1149793781
     locked: 0
+  - name: Objectives
+    uniqueID: 911938417
+    locked: 0
