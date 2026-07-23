@@ -40,7 +40,7 @@ public class ExitController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-        spanwExit(1);
+        spanwExit(3);
     }
 
     // Update is called once per frame

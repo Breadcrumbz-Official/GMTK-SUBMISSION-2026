@@ -5,7 +5,7 @@ using UnityEngine;
 public class ObjectivePickup : MonoBehaviour
 {
 
-    public ExitController exitScript;
+    public ExitController door;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -13,18 +13,19 @@ public class ObjectivePickup : MonoBehaviour
         Debug.Log(collision.tag);
         if(collision.CompareTag("Player"))
         {
-            ExitController door = Object.FindFirstObjectByType<ExitController>();
 
             door.collectObj();
 
             Debug.Log("collect");
+
+            gameObject.SetActive(false);
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        door = Object.FindFirstObjectByType<ExitController>();
     }
 
     // Update is called once per frame
