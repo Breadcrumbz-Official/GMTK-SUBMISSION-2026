@@ -18,6 +18,8 @@ public class ObjectivePickup : MonoBehaviour
             door.collectObj();
 
             Debug.Log("collect");
+
+            gameObject.SetActive(false);
         }
     }
 
