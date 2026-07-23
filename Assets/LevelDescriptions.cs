@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,14 +6,16 @@ using UnityEngine;
 
 public class LevelDescriptions : MonoBehaviour
 {
-    TextMeshPro txt;
+    TextMeshProUGUI txt;
 
     public int level;
+
+    string l1desc = "Welcome back Mr. Heist. Your first target is a small time art gallery, just to get you started.";
 
     // Start is called before the first frame update
     void Start()
     {
-        txt = GetComponent<TextMeshPro>();
+        txt = GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -20,7 +23,7 @@ public class LevelDescriptions : MonoBehaviour
     {
         if(level == 1)
         {
-            txt.text = "goobity";
+            txt.SetText(l1desc);
         }
     }
 }
