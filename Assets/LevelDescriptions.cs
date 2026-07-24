@@ -8,6 +8,8 @@ using UnityEngine;
 public class LevelDescriptions : MonoBehaviour
 {
     TextMeshProUGUI txt;
+    
+    [SerializeField] LevelTracker lt;
 
 
     //public int level;
@@ -23,11 +25,6 @@ public class LevelDescriptions : MonoBehaviour
     "",
     };
 
-    public void updateDesc(string desc)
-    {
-        txt.SetText(desc);
-    }
-
 
     void Awake()
     {
@@ -42,6 +39,6 @@ public class LevelDescriptions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        txt.SetText(descs[lt.levelCurrent-1]);
     }
 }

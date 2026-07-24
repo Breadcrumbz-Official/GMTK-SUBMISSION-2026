@@ -10,7 +10,7 @@ public class countdownPositioning : MonoBehaviour
 
     public Camera cam;
 
-    private float offset = 5f;
+    public float offset = 5f;
 
 
     void Awake()

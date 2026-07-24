@@ -253,6 +253,10 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 1224423123}
+    - target: {fileID: 1563011415447152730, guid: 94ba20a53cdf7574181b88739a7acbd2, type: 3}
+      propertyPath: offset
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1660977763465270688, guid: 94ba20a53cdf7574181b88739a7acbd2, type: 3}
       propertyPath: m_LocalPosition.z
       value: 1
@@ -303,11 +307,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5040057680721934922, guid: 94ba20a53cdf7574181b88739a7acbd2, type: 3}
       propertyPath: m_fontSize
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5040057680721934922, guid: 94ba20a53cdf7574181b88739a7acbd2, type: 3}
       propertyPath: m_fontSizeBase
-      value: 2
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8616114719508782716, guid: 94ba20a53cdf7574181b88739a7acbd2, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1734763189
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

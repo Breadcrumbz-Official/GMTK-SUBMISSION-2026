@@ -12,34 +12,40 @@ public class LevelTracker : ScriptableObject
     {
       "level 1"
     };
-    public int levelCurrent = 0;
+    public int levelCurrent = 1;
 
     public void winMission()
     {
         levelCurrent += 1;
 
-        showPreview(levelCurrent - 1);
+        showPreview();
     }
 
-    public void showPreview(int lev)
+    /* private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        SceneManager.LoadScene("LevelPreviewScreen");
+        SceneManager.sceneLoaded -= OnSceneLoaded;        
+        //yield return new WaitUntil(() => SceneManager.LoadSceneAsync == true);
+    }*/
 
-        LevelDescriptions desc = Object.FindFirstObjectByType<LevelDescriptions>();
-        LevelTitles title = Object.FindFirstObjectByType<LevelTitles>();
+    public void showPreview()
+    {
+        SceneManager.LoadSceneAsync("LevelPreviewScreen");
 
-        desc.updateDesc(desc.descs[lev]);
-        title.updateTit(title.tits[lev]);
+        //SceneManager.sceneLoaded += OnSceneLoaded;
+
+
     }
 
-    public void previewToLevel(int lev)
+
+
+    public void previewToLevel()
     {
-        SceneManager.LoadScene(levelNames[lev -1]);
+        SceneManager.LoadScene(levelNames[levelCurrent-1]);
     }
 
     public void GameOver()
     {
-        levelCurrent = 0;
+        showPreview();
     }
 
 
