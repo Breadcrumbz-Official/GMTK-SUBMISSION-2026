@@ -282,6 +282,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94de0e5b1f334f442b52e7557f886b5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lt: {fileID: 11400000, guid: e017a46ac822ed149b72d51883f0b190, type: 2}
+  freezeTime: 1
 --- !u!114 &1563011415447152730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,3 +296,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc8d80af03d3d7144a0700c7c21b89fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  offset: 5
