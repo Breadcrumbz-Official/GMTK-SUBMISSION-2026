@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 1149793781
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 59c0b31fc6e11f84d8574f85556ba31f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e25864394e312254c941cedd51e2aa94, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -176,9 +176,9 @@ MonoBehaviour:
   acceleration: 60
   deceleration: 70
   normalizeDiagonal: 1
-  frontSprite: {fileID: 21300000, guid: 59c0b31fc6e11f84d8574f85556ba31f, type: 3}
-  backSprite: {fileID: 21300000, guid: d23a49f55661d864fb9b63497f409f62, type: 3}
-  sideSprite: {fileID: 21300000, guid: 5c49ed27490bccc42bf895f116c66313, type: 3}
+  frontSprite: {fileID: 21300000, guid: e25864394e312254c941cedd51e2aa94, type: 3}
+  backSprite: {fileID: 21300000, guid: e5cc2bdd21ef51d41a686a18c73dd08e, type: 3}
+  sideSprite: {fileID: 21300000, guid: 906fbc32b0a6a7c4ca229355066fb7e3, type: 3}
   spriteRenderer: {fileID: 5466866660328281542}
   bounceWhileWalking: 1
   bounceAngle: 10

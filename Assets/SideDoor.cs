@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 #endif
 
-public class Door : MonoBehaviour
+public class SideDoor : MonoBehaviour
 {
     [Header("Player")]
     [Tooltip("Leave empty and it finds the object tagged 'Player' automatically.")]
@@ -52,7 +52,7 @@ public class Door : MonoBehaviour
         if (prompt) prompt.SetActive(false);
 
         // Make sure the visuals and colliders match the starting state.
-        ApplyState();
+        ApplySideDoorState();
     }
 
     void Update()
@@ -66,7 +66,7 @@ public class Door : MonoBehaviour
         if (prompt && prompt.activeSelf != inRange)
         {
             prompt.SetActive(inRange);
-            UpdateLabel();
+            UpdateSideDoorLabel();
         }
 
         // Only respond to the key while the player is close enough.
@@ -78,8 +78,8 @@ public class Door : MonoBehaviour
     public void Toggle()
     {
         isOpen = !isOpen;
-        ApplyState();
-        UpdateLabel();
+        ApplySideDoorState();
+        UpdateSideDoorLabel();
 
         if (audioSource)
         {
@@ -89,7 +89,7 @@ public class Door : MonoBehaviour
     }
 
     // Push the current state onto the colliders and the two visuals.
-    void ApplyState()
+    void ApplySideDoorState()
     {
         // Closed: the blocker stops movement and sight.
         // Open:   the blocker is off (so you can walk through), but the open-state
@@ -106,7 +106,7 @@ public class Door : MonoBehaviour
     }
 
     // Keep the prompt wording honest about what pressing E will do.
-    void UpdateLabel()
+    void UpdateSideDoorLabel()
     {
         if (promptLabel) promptLabel.text = isOpen ? "[E] Close" : "[E] Open";
     }
