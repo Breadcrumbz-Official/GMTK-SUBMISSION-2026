@@ -4,26 +4,26 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LevelSelectButton : MonoBehaviour
+public class MainMenuButton : MonoBehaviour
 {
 
     [SerializeField] LevelTracker lt;
-    [SerializeField] Button lsb;
+    [SerializeField] Button mmb;
 
-    // Start is called before the first frame update
     void Awake()
     {
-        lsb.onClick.AddListener(GoLevelSelect);
+        mmb.onClick.AddListener(GoMainMenu);
     }
 
-    void GoLevelSelect()
+    void GoMainMenu()
     {
-        SceneManager.LoadScene("LevelSelect");
+        SceneManager.LoadScene("MainMenu");
     }
 
+    // Start is called before the first frame update
     void Start()
     {
-        lt.levelCurrent = 0;
+        
     }
 
     // Update is called once per frame

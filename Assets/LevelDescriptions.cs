@@ -19,12 +19,12 @@ public class LevelDescriptions : MonoBehaviour
     public string l3desc = "";
     public string l4desc = "";
     */
+
     public string[] descs = {
     "Welcome back Mr. Heist. Your first target is a small time art gallery, just to get you started. This one's been robbed about 12 times in the last year.",
     "",
     "",
     };
-
 
     void Awake()
     {
@@ -33,12 +33,16 @@ public class LevelDescriptions : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("the desc:   " + descs[lt.levelCurrent-1]);
+
         txt.SetText(descs[lt.levelCurrent-1]);
+        //Debug.Log("description index:  " + (lt.levelCurrent));
+        //Debug.Log(descs[lt.levelCurrent]);
     }
 }

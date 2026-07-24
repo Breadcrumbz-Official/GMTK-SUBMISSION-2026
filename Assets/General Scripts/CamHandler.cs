@@ -1,8 +1,15 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public class SecurityCamera2D : MonoBehaviour
 {
+    
+    
+    
+    [SerializeField] LevelTracker lt;
+    
+    
     [Header("Target")]
     [Tooltip("Leave empty and it finds the object tagged 'Player' at startup.")]
     public Transform player;
@@ -37,6 +44,9 @@ public class SecurityCamera2D : MonoBehaviour
     public Color clearColor = new Color(0.25f, 1f, 0.45f, 0.13f);
     public Color alertColor = new Color(1f, 0.25f, 0.2f, 0.28f);
     public int coneSortingOrder = -10;
+
+    [Header("Debug Mode")]
+    [SerializeField] bool getCaught;
 
     // ---- read these from other scripts if you want a UI meter or a warning sound
     public float VisibleFraction { get; private set; }
@@ -103,8 +113,13 @@ public class SecurityCamera2D : MonoBehaviour
     /// </summary>
     void PlayerDie()
     {
-        Debug.Log(name + " spotted the player.", this);
-        // TODO
+        if (getCaught)
+        {
+            Debug.Log(name + " spotted the player.", this);
+             // TODO
+
+            lt.GameOver(); 
+        }
     }
 
     // ---------------------------------------------------------------- detection

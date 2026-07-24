@@ -8,16 +8,14 @@ public class LevelTracker : ScriptableObject
 {
 
 
-    private string[] levelNames =
+    private string[] levelSceneNames =
     {
       "level 1"
     };
-    public int levelCurrent = 1;
+    public int levelCurrent = 0;
 
     public void winMission()
     {
-        levelCurrent += 1;
-
         showPreview();
     }
 
@@ -29,7 +27,7 @@ public class LevelTracker : ScriptableObject
 
     public void showPreview()
     {
-        SceneManager.LoadSceneAsync("LevelPreviewScreen");
+        SceneManager.LoadScene("LevelPreviewScreen");
 
         //SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -40,7 +38,7 @@ public class LevelTracker : ScriptableObject
 
     public void previewToLevel()
     {
-        SceneManager.LoadScene(levelNames[levelCurrent-1]);
+        SceneManager.LoadScene(levelSceneNames[levelCurrent-1]);
     }
 
     public void GameOver()
