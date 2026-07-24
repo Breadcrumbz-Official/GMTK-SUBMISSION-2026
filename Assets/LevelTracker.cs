@@ -14,7 +14,7 @@ public class LevelTracker : ScriptableObject
     };
     public int levelCurrent = 0;
 
-    public void nextMission()
+    public void winMission()
     {
         levelCurrent += 1;
 
