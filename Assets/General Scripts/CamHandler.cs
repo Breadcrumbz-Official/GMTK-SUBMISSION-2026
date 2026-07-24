@@ -44,6 +44,7 @@ public class SecurityCamera2D : MonoBehaviour
 
     float timer;
     bool fired;
+    public bool isOn = true;
 
     // Scratch buffers, allocated once so Update() never generates garbage.
     readonly Vector2[] samples = new Vector2[36];
@@ -70,27 +71,30 @@ public class SecurityCamera2D : MonoBehaviour
 
     void Update()
     {
-        if (!player) return;
-
-        VisibleFraction = ComputeVisibleFraction();
-        Spotted = VisibleFraction >= requiredVisibleFraction && VisibleFraction > 0f;
-
-        if (Spotted)
+        if (isOn)
         {
-            timer += Time.deltaTime;
-            if (timer >= detectionDelay && !fired)
+            if (!player) return;
+
+            VisibleFraction = ComputeVisibleFraction();
+            Spotted = VisibleFraction >= requiredVisibleFraction && VisibleFraction > 0f;
+
+            if (Spotted)
             {
-                fired = true;
-                PlayerDie();
+                timer += Time.deltaTime;
+                if (timer >= detectionDelay && !fired)
+                {
+                    fired = true;
+                    PlayerDie();
+                }
             }
-        }
-        else
-        {
-            timer = 0f;
-            if (!triggerOnce) fired = false;   // re-arm once they're out of sight
-        }
+            else
+            {
+                timer = 0f;
+                if (!triggerOnce) fired = false;   // re-arm once they're out of sight
+            }
 
-        UpdateConeMesh();
+            UpdateConeMesh();
+        }
     }
 
     /// <summary>

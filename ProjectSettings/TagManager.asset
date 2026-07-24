@@ -11,7 +11,7 @@ TagManager:
   - playerLayer
   - Water
   - UI
-  - 
+  - Obstacles
   - 
   - 
   - 
@@ -52,4 +52,7 @@ TagManager:
     locked: 0
   - name: Objectives
     uniqueID: 911938417
+    locked: 0
+  - name: Interactables
+    uniqueID: 738073243
     locked: 0
