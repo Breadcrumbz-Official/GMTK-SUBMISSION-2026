@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelPreviewScreen.unity
     guid: 8deb20832cb6705459cccaa79c79e69a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Victory Screen.unity
     guid: c970dd59c43e1634a91a729d08022776
   - enabled: 1
@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelSelect.unity
     guid: 5234895b42664f8419cb9a72ca3a52de
+  - enabled: 1
+    path: Assets/Scenes/Win Screen.unity
+    guid: 5603fea0c695d634d81103b799a9ce05
+  - enabled: 1
+    path: Assets/Scenes/Fail Screen.unity
+    guid: 38a435a7768e03d4a9970f4e65daccb3
   m_configObjects: {}

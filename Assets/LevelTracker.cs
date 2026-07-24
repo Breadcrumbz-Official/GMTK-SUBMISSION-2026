@@ -43,7 +43,7 @@ public class LevelTracker : ScriptableObject
 
     public void GameOver()
     {
-        showPreview();
+        SceneManager.LoadScene("Fail Screen");
     }
 
 

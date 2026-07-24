@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 582c85d14de01ac48b249fbbef176c02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lt: {fileID: 11400000, guid: e017a46ac822ed149b72d51883f0b190, type: 2}
   frontSprite: {fileID: 21300000, guid: 56d464843b92de546a523263f7db0b24, type: 3}
   backSprite: {fileID: 21300000, guid: 86b9106408b4e29408f02a0f2c0d24b4, type: 3}
   sideSprite: {fileID: 21300000, guid: 86238041b40e6e1428244e74eefc8c69, type: 3}
@@ -135,6 +136,7 @@ MonoBehaviour:
   clearColor: {r: 0.3, g: 1, b: 0.5, a: 0.85}
   alertColor: {r: 1, g: 0.3, b: 0.25, a: 0.9}
   recoverColor: {r: 0.3, g: 0.6, b: 1, a: 0.9}
+  getCaught: 1
 --- !u!50 &5923207967440143810
 Rigidbody2D:
   serializedVersion: 4

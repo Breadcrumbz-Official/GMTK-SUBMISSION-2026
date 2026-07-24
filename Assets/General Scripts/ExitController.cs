@@ -6,6 +6,9 @@ public class ExitController : MonoBehaviour
 {
 
 
+    [SerializeField] LevelTracker lt;
+    BoxCollider2D bc;
+    
     //variables for total objectives needed and how many are currently collected
     public int objReq;
     public int objCurrent;
@@ -27,6 +30,9 @@ public class ExitController : MonoBehaviour
             rb.simulated = false;
 
             Debug.Log("unlocked");
+
+            bc.isTrigger = true;
+
         }
         else
         {
@@ -36,10 +42,13 @@ public class ExitController : MonoBehaviour
     }
 
     // Start is called before the first frame update
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();       
+    }
+
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-
         spanwExit(3);
     }
 
