@@ -40,7 +40,7 @@ public class countdownTimer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        setMaxTime(2);
+        setMaxTime(60);
         resetTime();
         
     }

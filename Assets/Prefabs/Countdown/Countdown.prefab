@@ -283,7 +283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lt: {fileID: 11400000, guid: e017a46ac822ed149b72d51883f0b190, type: 2}
-  freezeTime: 1
+  freezeTime: 0
 --- !u!114 &1563011415447152730
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1f8e95af54e516498d0e68aef5f4750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lt: {fileID: 11400000, guid: e017a46ac822ed149b72d51883f0b190, type: 2}
   player: {fileID: 0}
   playerBody: {fileID: 0}
   range: 6.98
