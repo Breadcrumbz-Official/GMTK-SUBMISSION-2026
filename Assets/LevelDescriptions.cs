@@ -39,7 +39,7 @@ public class LevelDescriptions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("the desc:   " + descs[lt.levelCurrent-1]);
+        //Debug.Log("the desc:   " + descs[lt.levelCurrent-1]);
 
         txt.SetText(descs[lt.levelCurrent-1]);
         //Debug.Log("description index:  " + (lt.levelCurrent));

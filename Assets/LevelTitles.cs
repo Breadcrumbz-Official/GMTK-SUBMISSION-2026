@@ -38,7 +38,7 @@ public class LevelTitles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("the tit:   " + tits[lt.levelCurrent-1]);
+        //Debug.Log("the tit:   " + tits[lt.levelCurrent-1]);
         //Debug.Log(lt.levelCurrent);
         txt.SetText(tits[lt.levelCurrent-1]);
     }
