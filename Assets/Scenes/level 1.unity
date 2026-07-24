@@ -17675,9 +17675,9 @@ MonoBehaviour:
   tileGrid: {fileID: 5907974607268531667}
   tileSize: 1
   gridOrigin: {x: 0, y: 0}
-  maxWallTiles: 1
+  maxWallTiles: 2
   gridCornerRays: 1
-  wallRevealDepth: 1
+  wallRevealDepth: 2
   baseRays: 138
   exactCornerRays: 0
   edgeFeather: 0.22
