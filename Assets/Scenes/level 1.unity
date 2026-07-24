@@ -388,11 +388,11 @@ PrefabInstance:
       objectReference: {fileID: 1758132723}
     - target: {fileID: 9152971282424833355, guid: c959e7d3c22c3fc4cb957498051b0af5, type: 3}
       propertyPath: m_SortingLayer
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9152971282424833355, guid: c959e7d3c22c3fc4cb957498051b0af5, type: 3}
       propertyPath: m_SortingLayerID
-      value: 911938417
+      value: 701462827
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6493,6 +6493,10 @@ PrefabInstance:
     - target: {fileID: 4783804833697340993, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_Tiles.Array.data[213].second.m_TileObjectToInstantiateIndex
       value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 5380844376117220155, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 5380844376117220155, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_ChunkCullingBounds.x
@@ -12893,7 +12897,7 @@ PrefabInstance:
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[10].m_Data
       value: 
-      objectReference: {fileID: -734497145, guid: 86273450c12de9145bbac82f1015db5e, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[11].m_Data
       value: 
@@ -12905,7 +12909,7 @@ PrefabInstance:
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[13].m_Data
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -734497145, guid: 86273450c12de9145bbac82f1015db5e, type: 3}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[14].m_Data
       value: 
@@ -16164,7 +16168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[10].m_RefCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[11].m_RefCount
@@ -16176,7 +16180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[13].m_RefCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[14].m_RefCount
@@ -22764,7 +22768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_Tiles.Array.data[577].second.m_TileSpriteIndex
-      value: 10
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 6173390636169933083, guid: 8ff99ca79fb694942a41cd5913f25146, type: 3}
       propertyPath: m_Tiles.Array.data[578].second.m_TileMatrixIndex
@@ -30786,20 +30790,16 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  revealDistance: 1.5
   baseRays: 64
-  exactCornerRays: 0
+  exactCornerRays: 1
   cornerNudge: 0.0015
-  cornerMergeDistance: 0.05
   maxRays: 2048
-  despeckle: 1
-  despeckleTolerance: 0.05
-  despeckleMaxGap: 0.012
   edgeFeather: 0.22
-  wallFeather: 0.04
   fogColor: {r: 0, g: 0, b: 0, a: 1}
-  sortingLayer: Fog Of War
-  sortingOrder: 1000
+  sortingLayer: Walls & DEco
+  sortingOrder: 500
+  wallSortingOrder: 1000
+  checkSortingOrder: 1
   updateInterval: 0
   skipWhenStill: 1
   stillThreshold: 0.005
@@ -30975,11 +30975,11 @@ PrefabInstance:
       objectReference: {fileID: 1758132723}
     - target: {fileID: 9152971282424833355, guid: c959e7d3c22c3fc4cb957498051b0af5, type: 3}
       propertyPath: m_SortingLayer
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9152971282424833355, guid: c959e7d3c22c3fc4cb957498051b0af5, type: 3}
       propertyPath: m_SortingLayerID
-      value: 911938417
+      value: 701462827
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -31329,8 +31329,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 701462827
-  m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingLayer: 3
+  m_SortingOrder: 501
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -31425,8 +31425,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 911938417
-  m_SortingLayer: 4
+  m_SortingLayerID: 701462827
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &8703277203698763656
