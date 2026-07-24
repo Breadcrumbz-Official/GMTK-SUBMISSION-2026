@@ -13,6 +13,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Guard : MonoBehaviour
 {
+    [SerializeField] LevelTracker lt;
+    
     [Header("Sprites")]
     [Tooltip("Facing down / toward the camera.")]
     public Sprite frontSprite;
@@ -93,6 +95,9 @@ public class Guard : MonoBehaviour
     public bool Recovering { get; private set; }
 
     enum State { Patrol, Recover, Alert }
+
+    [Header("Debug Mode")]
+    [SerializeField] private bool getCaught;
 
     Rigidbody2D rb;
     State state = State.Patrol;
@@ -465,6 +470,12 @@ public class Guard : MonoBehaviour
     {
         Debug.Log(name + " spotted the player.", this);
         // TODO
+
+        if (getCaught)
+        {
+            lt.GameOver();
+        }
+
     }
 
     float ComputeVisibleFraction()
