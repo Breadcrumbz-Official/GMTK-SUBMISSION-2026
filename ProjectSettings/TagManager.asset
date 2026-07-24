@@ -56,3 +56,9 @@ TagManager:
   - name: Interactables
     uniqueID: 738073243
     locked: 0
+  - name: Fog Of War
+    uniqueID: 3868546211
+    locked: 0
+  - name: Text
+    uniqueID: 3777588073
+    locked: 0
