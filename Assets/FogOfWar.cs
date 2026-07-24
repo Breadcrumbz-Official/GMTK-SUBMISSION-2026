@@ -2,15 +2,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 360-degree raycast line-of-sight fog. Builds the visibility polygon around the
-/// viewer, then renders everything OUTSIDE it as solid black geometry drawn on top.
-/// Wall tiles you can see are revealed whole; anything past them is not.
+/// 360-degree raycast line-of-sight fog.
+///
+/// Each ray stops EXACTLY at the wall's near face — so every boundary point is a
+/// real hit (or the view radius), and there is nothing to extend, clip, or clean.
+/// Wall tiles are revealed by DRAW ORDER, not by pushing sight into them: the fog
+/// renders UNDER the walls, so a wall sprite paints over its own shadow and always
+/// shows in full. Black can never land on a collideable because the collideable is
+/// drawn after the fog.
+///
+/// Sorting order, low to high:
+///   floor (e.g. 0)  <  fog (sortingOrder)  <  walls (wallSortingOrder)  <  actors
 /// </summary>
 [DisallowMultipleComponent]
 public class FogOfWar2D : MonoBehaviour
 {
     const float TAU = Mathf.PI * 2f;
-    const float EPS = 1e-4f;
 
     [Header("Viewer")]
     [Tooltip("Leave empty and it finds the object tagged 'Player' automatically.")]
@@ -24,42 +31,29 @@ public class FogOfWar2D : MonoBehaviour
     [Tooltip("Set this to Obstacles. Anything on these layers blocks sight.")]
     public LayerMask obstacleMask;
 
-    [Header("Wall reveal — grid snapped")]
-    [Tooltip("Reveal whole tiles instead of pushing a distance into the wall. Keeps every edge on a tile boundary.")]
-    public bool snapToTileGrid = true;
-    [Tooltip("Optional. Drag your Tilemap's Grid here and the two fields below are filled in for you.")]
-    public Grid tileGrid;
-    [Tooltip("Tile size in world units.")]
-    public float tileSize = 1f;
-    [Tooltip("World position of the corner of cell (0,0).")]
-    public Vector2 gridOrigin = Vector2.zero;
-    [Tooltip("How many solid tiles deep sight reaches. 1 reveals the wall face only.")]
-    [Range(1, 4)] public int maxWallTiles = 1;
-    [Tooltip("Emit extra rays at the outer corners of revealed tiles, so those corners come out square.")]
-    public bool gridCornerRays = true;
-
-    [Tooltip("Only used when Snap To Tile Grid is off: how far sight pushes into a wall.")]
-    public float wallRevealDepth = 1f;
-
     [Header("Quality")]
     [Tooltip("Evenly spaced rays that fill in the open areas. Corners get their own rays on top.")]
-    [Range(8, 240)] public int baseRays = 64;
+    [Range(8, 360)] public int baseRays = 90;
     [Tooltip("Also fire a ray exactly at each corner, not just to either side.")]
-    public bool exactCornerRays = false;
-    [Tooltip("Softness of the circular edge at maximum view range. 0 = hard edge.")]
-    [Range(0f, 2f)] public float edgeFeather = 0.35f;
-    [Tooltip("Softness where sight stops against a wall. Leave at 0 for crisp tile edges.")]
-    [Range(0f, 0.5f)] public float wallFeather = 0f;
+    public bool exactCornerRays = true;
     [Tooltip("Angle in radians that corner rays are split by, to catch both sides of a wall corner.")]
-    public float cornerNudge = 0.0015f;
-    [Tooltip("Safety ceiling on rays per rebuild.")]
-    public int maxRays = 2048;
+    [Range(0.0002f, 0.01f)] public float cornerNudge = 0.0015f;
+    [Tooltip("Safety ceiling on rays per rebuild, so a pathological scene can't stall the frame.")]
+    public int maxRays = 4096;
 
     [Header("Look")]
+    [Tooltip("Softness of the circular edge at maximum view range. 0 = hard edge.")]
+    [Range(0f, 2f)] public float edgeFeather = 0.35f;
     public Color fogColor = Color.black;
     public string sortingLayer = "Default";
-    [Tooltip("Must be higher than every sprite you want hidden.")]
-    public int sortingOrder = 1000;
+    [Tooltip("Fog draws at THIS order. It must sit ABOVE the floor and BELOW the walls.")]
+    public int sortingOrder = 500;
+
+    [Header("Draw-order safeguard")]
+    [Tooltip("Your wall tilemap/sprites' Order in Layer. Only used to warn you if fog would cover them.")]
+    public int wallSortingOrder = 1000;
+    [Tooltip("Log a one-time warning if fog order isn't safely below wall order.")]
+    public bool checkSortingOrder = true;
 
     [Header("Performance")]
     [Tooltip("Seconds between rebuilds. 0 = every frame.")]
@@ -77,23 +71,17 @@ public class FogOfWar2D : MonoBehaviour
     readonly List<Collider2D> overlaps = new List<Collider2D>(64);
     readonly List<Vector2> pathBuf = new List<Vector2>(256);
     readonly RaycastHit2D[] rayHit = new RaycastHit2D[1];
-    readonly Collider2D[] pointBuf = new Collider2D[1];
 
     float[] angles = new float[1024];
     int angleCount;
     Vector2[] dirs = new Vector2[1024];
     float[] dists = new float[1024];
-    bool[] blocked = new bool[1024];
 
     Vector3[] verts = new Vector3[3072];
     Color32[] cols = new Color32[3072];
     int[] tris = new int[0];
     int trisForN = -1;
     int meshVertCount = -1;
-
-    // Per-rebuild memo of which grid cells are solid. Many rays march the same
-    // cells, and a dictionary hit is far cheaper than a physics query.
-    readonly Dictionary<long, bool> cellSolid = new Dictionary<long, bool>(256);
 
     class WallCorners
     {
@@ -114,6 +102,8 @@ public class FogOfWar2D : MonoBehaviour
     Vector2 lastOrigin = new Vector2(float.MaxValue, float.MaxValue);
     Vector3 lastCamPos = new Vector3(float.MaxValue, 0f, 0f);
     Camera cam;
+    bool warnedSorting;
+    bool warnedNoMask;
 
     Vector2 Origin => viewer ? (Vector2)viewer.position + eyeOffset : (Vector2)transform.position;
 
@@ -125,15 +115,14 @@ public class FogOfWar2D : MonoBehaviour
         {
             GameObject p = GameObject.FindWithTag("Player");
             if (p) viewer = p.transform;
-            else Debug.LogWarning(name + ": no viewer found. Tag your player 'Player'.", this);
+            else Debug.LogWarning(name + ": no viewer found. Tag your player 'Player' or assign Viewer.", this);
         }
 
         cam = Camera.main;
-        AdoptGrid();
 
         // Ignore trigger colliders so door interaction zones don't cast shadows.
-        // The plain layerMask overloads of Raycast/OverlapPoint still hit triggers,
-        // which is why every query below goes through this filter instead.
+        // The plain layerMask overloads still hit triggers, which is why every
+        // query below goes through this filter instead.
         filter = new ContactFilter2D
         {
             useLayerMask = true,
@@ -142,13 +131,6 @@ public class FogOfWar2D : MonoBehaviour
         };
 
         BuildMeshObject();
-    }
-
-    void AdoptGrid()
-    {
-        if (!tileGrid) return;
-        tileSize = Mathf.Abs(tileGrid.cellSize.x) > 1e-4f ? tileGrid.cellSize.x : tileSize;
-        gridOrigin = tileGrid.transform.position;
     }
 
     void OnDestroy()
@@ -183,6 +165,8 @@ public class FogOfWar2D : MonoBehaviour
     {
         if (!viewer) return;
 
+        if (!ValidateSetup()) return;
+
         if (updateInterval > 0f)
         {
             timer -= Time.deltaTime;
@@ -190,6 +174,7 @@ public class FogOfWar2D : MonoBehaviour
             timer = updateInterval;
         }
 
+        // Nothing moved, so last frame's mesh is still correct.
         if (skipWhenStill && meshVertCount > 0)
         {
             Vector2 o = Origin;
@@ -202,11 +187,32 @@ public class FogOfWar2D : MonoBehaviour
         Rebuild();
     }
 
+    // Cheap guards that catch the mistakes that actually happen, each warned once.
+    bool ValidateSetup()
+    {
+        if (obstacleMask.value == 0 && !warnedNoMask)
+        {
+            warnedNoMask = true;
+            Debug.LogWarning(name + ": Obstacle Mask is empty — set it to your Obstacles layer or " +
+                             "no walls will block sight.", this);
+        }
+
+        if (checkSortingOrder && !warnedSorting && sortingOrder >= wallSortingOrder)
+        {
+            warnedSorting = true;
+            Debug.LogWarning(name + $": fog Sorting Order ({sortingOrder}) is not below Wall Sorting Order " +
+                             $"({wallSortingOrder}). Wall tiles will be covered by fog. Lower the fog order " +
+                             "or raise your walls' Order in Layer.", this);
+        }
+
+        return viewRadius > 0.01f;
+    }
+
     /// <summary>Force a rebuild, e.g. after opening a door or moving a wall.</summary>
     public void ForceRebuild()
     {
         lastOrigin = new Vector2(float.MaxValue, float.MaxValue);
-        if (viewer) Rebuild();
+        if (viewer && ValidateSetup()) Rebuild();
     }
 
     // ---------------------------------------------------------------- the build
@@ -219,9 +225,9 @@ public class FogOfWar2D : MonoBehaviour
         lastCamPos = cam ? cam.transform.position : Vector3.zero;
 
         meshGO.transform.position = origin;
+        mr.sortingLayerName = sortingLayer;   // picked up if changed at runtime
         mr.sortingOrder = sortingOrder;
         frameStamp++;
-        cellSolid.Clear();
 
         GatherAngles(origin);
         CastRays(origin);
@@ -240,16 +246,20 @@ public class FogOfWar2D : MonoBehaviour
         // two passes around the circle and the polygon folds over itself.
         angleCount = 0;
 
-        EnsureAngleCapacity(baseRays);
-        for (int i = 0; i < baseRays; i++)
-            angles[angleCount++] = i * TAU / baseRays;
+        int rays = Mathf.Clamp(baseRays, 8, 360);
+        EnsureAngleCapacity(rays);
+        for (int i = 0; i < rays; i++)
+            angles[angleCount++] = i * TAU / rays;
+
+        // Plus rays straddling every wall corner in range. Those are what slip past
+        // the corner and give the shadow its crisp edge. cornerNudge is clamped so a
+        // zero or negative value in the Inspector can't collapse the pair.
+        float nudge = Mathf.Max(cornerNudge, 1e-4f);
 
         overlaps.Clear();
         Physics2D.OverlapCircle(origin, viewRadius, filter, overlaps);
 
-        float pad = snapToTileGrid ? tileSize * (maxWallTiles + 1) : wallRevealDepth + 0.1f;
-        float reach = viewRadius + pad;
-        float reachSqr = reach * reach;
+        float reachSqr = (viewRadius + 0.5f) * (viewRadius + 0.5f);
 
         for (int c = 0; c < overlaps.Count; c++)
         {
@@ -258,55 +268,25 @@ public class FogOfWar2D : MonoBehaviour
 
             for (int i = 0; i < pts.Length; i++)
             {
-                Vector2 p = pts[i];
-                float dx = p.x - origin.x, dy = p.y - origin.y;
-                if (dx * dx + dy * dy > reachSqr) continue;
+                float dx = pts[i].x - origin.x;
+                float dy = pts[i].y - origin.y;
+                float dsq = dx * dx + dy * dy;
+                if (dsq > reachSqr || dsq < 1e-8f) continue;   // out of range, or corner on top of us
 
-                // Two rays straddling the corner. These are what slip past it and
-                // define the shadow edge; the exact-angle ray between them is
-                // almost always redundant.
-                AddCornerAngles(origin, p);
+                if (angleCount + 3 > maxRays) break;
+                EnsureAngleCapacity(angleCount + 3);
 
-                // The revealed band sticks out one tile past the wall outline, so
-                // its outer corners sit a tile diagonally out. Aiming rays there is
-                // what makes those corners come out square instead of chamfered.
-                if (snapToTileGrid && gridCornerRays)
-                {
-                    float t = tileSize * maxWallTiles;
-                    AddAngle(origin, p.x - t, p.y - t, reachSqr);
-                    AddAngle(origin, p.x + t, p.y - t, reachSqr);
-                    AddAngle(origin, p.x + t, p.y + t, reachSqr);
-                    AddAngle(origin, p.x - t, p.y + t, reachSqr);
-                }
+                float a = Mathf.Atan2(dy, dx);   // returns -PI..PI
+                if (a < 0f) a += TAU;            // normalise into 0..TAU
+
+                angles[angleCount++] = Wrap(a - nudge);
+                angles[angleCount++] = Wrap(a + nudge);
+                if (exactCornerRays) angles[angleCount++] = a;
             }
+            if (angleCount + 3 > maxRays) break;
         }
 
         System.Array.Sort(angles, 0, angleCount);
-    }
-
-    void AddCornerAngles(Vector2 origin, Vector2 p)
-    {
-        if (angleCount + 3 > maxRays) return;
-        EnsureAngleCapacity(angleCount + 3);
-
-        float a = Mathf.Atan2(p.y - origin.y, p.x - origin.x);   // -PI..PI
-        if (a < 0f) a += TAU;                                     // normalise to 0..TAU
-
-        angles[angleCount++] = Wrap(a - cornerNudge);
-        angles[angleCount++] = Wrap(a + cornerNudge);
-        if (exactCornerRays) angles[angleCount++] = a;
-    }
-
-    void AddAngle(Vector2 origin, float x, float y, float reachSqr)
-    {
-        if (angleCount + 1 > maxRays) return;
-        float dx = x - origin.x, dy = y - origin.y;
-        if (dx * dx + dy * dy > reachSqr) return;
-
-        EnsureAngleCapacity(angleCount + 1);
-        float a = Mathf.Atan2(dy, dx);
-        if (a < 0f) a += TAU;
-        angles[angleCount++] = a;
     }
 
     // --- 2. fire them, skipping duplicate angles that would make zero-area wedges
@@ -324,11 +304,8 @@ public class FogOfWar2D : MonoBehaviour
             prev = a;
 
             Vector2 dir = new Vector2(Mathf.Cos(a), Mathf.Sin(a));
-            int count = Physics2D.Raycast(origin, dir, filter, rayHit, viewRadius);
-
             dirs[n] = dir;
-            blocked[n] = count > 0;
-            dists[n] = count > 0 ? RevealDistance(origin, dir, rayHit[0]) : viewRadius;
+            dists[n] = RayDistance(origin, dir);
             n++;
         }
 
@@ -336,92 +313,23 @@ public class FogOfWar2D : MonoBehaviour
     }
 
     /// <summary>
-    /// How far sight reaches once it has hit a wall. Walks the tile grid from the
-    /// hit point and stops at the first cell that isn't solid, so the boundary
-    /// always lands exactly on a tile edge — never mid-wall, never in open floor.
+    /// Stop exactly at the wall's near face, or at the view radius if nothing is hit.
+    /// The result is always a real, on-surface distance — never an extension into or
+    /// past a wall — which is precisely why this version can't produce slivers,
+    /// notches, or offset shadow lines. Wall tiles are shown by draw order instead.
     /// </summary>
-    float RevealDistance(Vector2 origin, Vector2 dir, RaycastHit2D hit)
+    float RayDistance(Vector2 origin, Vector2 dir)
     {
-        if (!snapToTileGrid) return LegacyReveal(origin, dir, hit);
-        if (tileSize <= 1e-4f) return hit.distance;
+        int count = Physics2D.Raycast(origin, dir, filter, rayHit, viewRadius);
+        if (count == 0) return viewRadius;
 
-        float d = hit.distance;
-
-        for (int step = 0; step < maxWallTiles; step++)
-        {
-            // Sample just past the current boundary to identify the next cell.
-            float px = origin.x + dir.x * (d + EPS);
-            float py = origin.y + dir.y * (d + EPS);
-
-            int cx = Mathf.FloorToInt((px - gridOrigin.x) / tileSize);
-            int cy = Mathf.FloorToInt((py - gridOrigin.y) / tileSize);
-
-            if (!CellSolid(cx, cy)) break;      // stepped out of the wall: done
-
-            float exit = CellExit(origin, dir, cx, cy);
-            if (exit <= d + EPS) break;         // numerical safety, never go backwards
-            d = exit;
-        }
-
-        return d;
+        float d = rayHit[0].distance;
+        // Clamp into a sane range so a degenerate hit can't emit a bad vertex.
+        if (d < 0f) return 0f;
+        return d < viewRadius ? d : viewRadius;
     }
 
-    // Distance along the ray at which it leaves cell (cx, cy). Standard slab test —
-    // exact, so the result is precisely on a grid line.
-    float CellExit(Vector2 origin, Vector2 dir, int cx, int cy)
-    {
-        float minX = gridOrigin.x + cx * tileSize;
-        float minY = gridOrigin.y + cy * tileSize;
-        float maxX = minX + tileSize;
-        float maxY = minY + tileSize;
-
-        float tx = float.MaxValue, ty = float.MaxValue;
-        if (dir.x > 1e-6f)       tx = (maxX - origin.x) / dir.x;
-        else if (dir.x < -1e-6f) tx = (minX - origin.x) / dir.x;
-        if (dir.y > 1e-6f)       ty = (maxY - origin.y) / dir.y;
-        else if (dir.y < -1e-6f) ty = (minY - origin.y) / dir.y;
-
-        return tx < ty ? tx : ty;
-    }
-
-    // Is this grid cell inside a wall? Tested at the cell centre, so internal
-    // seams between per-tile colliders are invisible to it — which is exactly
-    // why this doesn't suffer the artifacts a surface probe does.
-    bool CellSolid(int cx, int cy)
-    {
-        long key = ((long)cx << 32) ^ (uint)cy;
-        if (cellSolid.TryGetValue(key, out bool solid)) return solid;
-
-        Vector2 c = new Vector2(gridOrigin.x + (cx + 0.5f) * tileSize,
-                                gridOrigin.y + (cy + 0.5f) * tileSize);
-        solid = Physics2D.OverlapPoint(c, filter, pointBuf) > 0;
-
-        cellSolid[key] = solid;
-        return solid;
-    }
-
-    // Non-grid fallback: push a perpendicular depth in, clamped to the far face.
-    float LegacyReveal(Vector2 origin, Vector2 dir, RaycastHit2D hit)
-    {
-        if (wallRevealDepth <= 0f) return hit.distance;
-
-        float cos = Mathf.Abs(dir.x * hit.normal.x + dir.y * hit.normal.y);
-        float cap = wallRevealDepth * 1.6f;
-        float along = cos > 1e-4f ? wallRevealDepth / cos : cap;
-        if (along > cap) along = cap;
-
-        float probe = along + 0.05f;
-        Vector2 start = origin + dir * (hit.distance + probe);
-        if (Physics2D.Raycast(start, -dir, filter, rayHit, probe) > 0)
-        {
-            float thickness = probe - rayHit[0].distance;
-            if (thickness < 0f) thickness = 0f;
-            if (thickness < along) along = thickness;
-        }
-        return hit.distance + along;
-    }
-
-    // --- 3. build the INVERSE of that polygon
+    // --- 3. build the INVERSE of the visibility polygon
     void BuildMesh(Vector2 origin, int n)
     {
         // Three rings of vertices along each ray:
@@ -442,10 +350,11 @@ public class FogOfWar2D : MonoBehaviour
 
         for (int i = 0; i < n; i++)
         {
-            // Feather inwards so the fog is fully opaque by the time it reaches the
-            // boundary. Fading outwards would let you see through walls. Wall hits
-            // get no feather by default; the open max-range edge gets a soft one.
-            float f = blocked[i] ? wallFeather : edgeFeather;
+            // Feather only the open max-range edge; wall hits get a hard edge so the
+            // shadow line sits crisply on the near face. (A hit is anything shorter
+            // than the view radius.)
+            bool openEdge = dists[i] >= viewRadius - 0.001f;
+            float f = openEdge ? edgeFeather : 0f;
             float inner = dists[i] - f;
             if (inner < 0f) inner = 0f;
 
@@ -499,6 +408,7 @@ public class FogOfWar2D : MonoBehaviour
         }
     }
 
+    // How far out the fog must reach to cover the whole screen.
     float FarDistance(Vector2 origin)
     {
         if (cam && cam.orthographic)
@@ -520,6 +430,10 @@ public class FogOfWar2D : MonoBehaviour
 
     // ---------------------------------------------------------------- corner cache
 
+    /// <summary>
+    /// World-space corner points for a collider. Local points are extracted once;
+    /// world points are re-baked only when that collider's transform actually moves.
+    /// </summary>
     Vector2[] GetWorldCorners(Collider2D col)
     {
         if (!col) return null;
@@ -540,7 +454,6 @@ public class FogOfWar2D : MonoBehaviour
 
         wc.touchedFrame = frameStamp;
 
-        // Re-bake world positions only when the collider has actually moved.
         Matrix4x4 m = col.transform.localToWorldMatrix;
         if (m != wc.matrix)
         {
@@ -551,6 +464,8 @@ public class FogOfWar2D : MonoBehaviour
         return wc.world;
     }
 
+    // Pulls the corner points out of whatever collider shape the wall uses,
+    // in the collider's own local space with its offset already folded in.
     Vector2[] ExtractLocalCorners(Collider2D col)
     {
         if (col is BoxCollider2D box)
@@ -575,7 +490,7 @@ public class FogOfWar2D : MonoBehaviour
                 poly.GetPath(i, pathBuf);
                 for (int k = 0; k < pathBuf.Count; k++) acc.Add(pathBuf[k] + poly.offset);
             }
-            return acc.ToArray();
+            return acc.Count > 0 ? acc.ToArray() : null;
         }
 
         // This is what a Tilemap Collider 2D merges down into.
@@ -588,12 +503,13 @@ public class FogOfWar2D : MonoBehaviour
                 comp.GetPath(i, pathBuf);
                 for (int k = 0; k < pathBuf.Count; k++) acc.Add(pathBuf[k] + comp.offset);
             }
-            return acc.ToArray();
+            return acc.Count > 0 ? acc.ToArray() : null;
         }
 
         if (col is EdgeCollider2D edge)
         {
             Vector2[] pts = edge.points;
+            if (pts == null || pts.Length == 0) return null;
             var acc = new Vector2[pts.Length];
             for (int k = 0; k < pts.Length; k++) acc[k] = pts[k] + edge.offset;
             return acc;
@@ -601,6 +517,7 @@ public class FogOfWar2D : MonoBehaviour
 
         if (col is CircleCollider2D circle)
         {
+            // No corners on a circle, so ring it with sample points instead.
             var acc = new Vector2[12];
             for (int k = 0; k < 12; k++)
             {
@@ -610,6 +527,7 @@ public class FogOfWar2D : MonoBehaviour
             return acc;
         }
 
+        // Anything else (capsule, etc): fall back to its local bounding box.
         Bounds b = col.bounds;
         Matrix4x4 inv = col.transform.worldToLocalMatrix;
         return new[]
@@ -621,6 +539,8 @@ public class FogOfWar2D : MonoBehaviour
         };
     }
 
+    // Drop entries for colliders we haven't seen in a while, so the cache doesn't
+    // grow forever in a big level or hold references to destroyed objects.
     void PruneCacheOccasionally()
     {
         if (cornerCache.Count < 128 || (frameStamp & 255) != 0) return;
@@ -648,7 +568,6 @@ public class FogOfWar2D : MonoBehaviour
         int size = Mathf.NextPowerOfTwo(need);
         dirs = new Vector2[size];
         dists = new float[size];
-        blocked = new bool[size];
     }
 
     void EnsureVertCapacity(int need)
@@ -662,7 +581,10 @@ public class FogOfWar2D : MonoBehaviour
 
     // ---------------------------------------------------------------- helpers
 
-    /// <summary>Can the viewer currently see this world point? Useful for AI.</summary>
+    /// <summary>
+    /// Can the viewer currently see this world point? Handy for enemy AI,
+    /// or for hiding objects rather than just covering them with fog.
+    /// </summary>
     public bool IsVisible(Vector2 worldPoint)
     {
         Vector2 origin = Origin;
