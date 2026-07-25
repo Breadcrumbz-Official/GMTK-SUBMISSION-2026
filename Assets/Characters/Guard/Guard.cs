@@ -1,6 +1,8 @@
+using System;
 using Unity.Mathematics;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 /// <summary>
@@ -21,7 +23,7 @@ public class Guard : MonoBehaviour
 
     private Transform tf;
 
-    private bool frozen = false;
+    //private bool frozen = false;
     
     [Header("Sprites")]
     [Tooltip("Facing down / toward the camera.")]
@@ -107,10 +109,18 @@ public class Guard : MonoBehaviour
     [Header("Debug Mode")]
     [SerializeField] private bool getCaught;
 
-    [Header("Freeze")]
+    /*[Header("Freeze")]
     [SerializeField] float freezeTimeTotal = 1f;
-    float freezeTimeCurrent = 0f;
+    float freezeTimeCurrent = 0f;*/
 
+    public bool distracted = false;
+    public bool distractDone = true;
+
+    private Vector3 distractPrePos;
+    public Vector3 distractPos;
+
+
+    NavMeshAgent nma;
     Rigidbody2D rb;
     State state = State.Patrol;
     int index;
@@ -146,6 +156,8 @@ public class Guard : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        nma = GetComponent<NavMeshAgent>();
+
         rb.gravityScale = 0f;
         rb.freezeRotation = true;          // the BODY never rotates; we swap sprites instead
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
@@ -198,6 +210,9 @@ public class Guard : MonoBehaviour
 
     void Start()
     {
+        nma.updateRotation = false;
+        nma.updateUpAxis = false;
+
         et.AddToList(gameObject);
         tf = GetComponent<Transform>();
     }
@@ -241,7 +256,28 @@ public class Guard : MonoBehaviour
         }
 
         if (state == State.Recover) Recover();
-        else                        Patrol();
+        else
+        {
+            if (!distracted)
+            {
+                Patrol();
+            }
+            else
+            {
+                RotateToward((float)(180/math.PI * Math.Atan2(rb.velocity.y, rb.velocity.x)), turnSpeed);
+
+                if (!distractDone && tf.position == distractPos)
+                {
+                    distractDone = true;
+                }
+            }
+
+            if(distractDone && tf.position == distractPrePos)
+            {
+                distracted = false;
+                distractDone = false;
+            }
+        }
     }
 
     // ---------------------------------------------------------------- patrol
@@ -318,6 +354,25 @@ public class Guard : MonoBehaviour
         float v = Mathf.Min(speed, dist / Time.fixedDeltaTime);
         Vel = to / dist * v;
 
+    }
+
+    public void Distract(float posx, float posy)
+    {
+        distractPos = new Vector3(posx,posy,0);
+        
+        distractPrePos = new Vector3(tf.position.x, tf.position.y, 0);
+
+        distracted = true;
+
+        nma.enabled = true;
+        nma.SetDestination(distractPos);
+    }
+
+    public void DistractRecover(float tx, float ty)
+    {
+        distractDone = true;
+
+        nma.SetDestination(new Vector3(tx, ty, 0));
     }
 
     /*public void Freeze()
