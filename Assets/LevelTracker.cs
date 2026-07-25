@@ -49,13 +49,9 @@ public class LevelTracker : ScriptableObject
         SceneManager.LoadScene(levelSceneNames[levelCurrent-1]);
     }
 
-    public void GameOver(Guard guard)
+    public void GameOver()
     {
         //freeze = true;
-        if(guard != null)
-        {
-            guard.GetComponent<Guard>().Freeze();
-        }
 
         GameObject p = GameObject.Find("Player");
         p.GetComponent<PlayerController>().frozen = true;
