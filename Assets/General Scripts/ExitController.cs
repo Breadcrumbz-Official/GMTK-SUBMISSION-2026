@@ -66,6 +66,27 @@ public class ExitController : MonoBehaviour
 
     void Start()
     {
-        spanwExit(0);
+        switch (lt.levelCurrent)
+        {
+            case 1:
+            spanwExit(3);
+            break;
+
+            case 2:
+            spanwExit(3);
+            break;
+            
+            case 3:
+            spanwExit(3);
+            break;
+            
+            case 4:
+            spanwExit(3);
+            break;
+            
+            case 5:
+            spanwExit(3);
+            break;
+        }
     }
 }

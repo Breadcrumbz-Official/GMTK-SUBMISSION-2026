@@ -31470,7 +31470,7 @@ PrefabInstance:
       objectReference: {fileID: 1758132723}
     - target: {fileID: 4902719950333091108, guid: afa5d29d70fa10149be2d452272be1fb, type: 3}
       propertyPath: getCaught
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4902719950333091108, guid: afa5d29d70fa10149be2d452272be1fb, type: 3}
       propertyPath: playerBody
