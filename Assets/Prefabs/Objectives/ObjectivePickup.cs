@@ -10,13 +10,13 @@ public class ObjectivePickup : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        Debug.Log(collision.tag);
+        //Debug.Log(collision.tag);
         if(collision.CompareTag("Player"))
         {
 
             door.collectObj();
 
-            Debug.Log("collect");
+            //Debug.Log("collect");
 
             gameObject.SetActive(false);
         }

@@ -16,7 +16,9 @@ public class LevelTracker : ScriptableObject
 
     public void winMission()
     {
-        showPreview();
+        SceneManager.LoadScene("Win Screen");
+
+        Debug.Log("win");
     }
 
     /* private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

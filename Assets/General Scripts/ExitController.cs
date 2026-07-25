@@ -7,11 +7,13 @@ public class ExitController : MonoBehaviour
 
 
     [SerializeField] LevelTracker lt;
-    BoxCollider2D bc;
+    //BoxCollider2D bc;
     
     //variables for total objectives needed and how many are currently collected
     public int objReq;
     public int objCurrent;
+
+    public bool unlocked = false;
 
     Rigidbody2D rb;
 
@@ -20,6 +22,7 @@ public class ExitController : MonoBehaviour
         objCurrent = 0;
         objReq = totalObj;
         rb.simulated = true;
+        unlocked = false;
     }
 
     public void collectObj()
@@ -31,7 +34,9 @@ public class ExitController : MonoBehaviour
 
             Debug.Log("unlocked");
 
-            bc.isTrigger = true;
+            unlocked = true;
+
+            //bc.isTrigger = true;
 
         }
         else
@@ -45,17 +50,27 @@ public class ExitController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        bc = GetComponent<BoxCollider2D>();
+        //bc = GetComponent<BoxCollider2D>();
     }
 
     void Start()
     {
-        spanwExit(3);
+        spanwExit(0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
+    /*void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log(collision.tag);
+
+        if (collision.CompareTag("Player"))
+        {
+            lt.winMission();
+        }
+    }*/
 }
