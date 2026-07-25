@@ -73,7 +73,7 @@ public class countdownTimer : MonoBehaviour
         }
         else
         {
-            txt.SetText("inf");
+            txt.SetText("Oops!");
         }
     }
     

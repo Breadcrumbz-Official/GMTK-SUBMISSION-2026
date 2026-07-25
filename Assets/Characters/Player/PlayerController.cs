@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
     float facing = -90f;     // math angle, start facing down
     float bouncePhase;
 
+    public bool frozen;
+
     // velocity was renamed linearVelocity in Unity 6. This works on both.
     Vector2 Vel
     {
@@ -93,46 +95,60 @@ public class PlayerController : MonoBehaviour
         UpdateSprite();
     }
 
+    void Start()
+    {
+        frozen = false;
+    }
+
     void Update()
     {
         float x = 0f, y = 0f;
-
-#if ENABLE_INPUT_SYSTEM
-        var k = Keyboard.current;
-        if (k != null)
+        if (!frozen)
         {
-            if (k.aKey.isPressed || k.leftArrowKey.isPressed)  x -= 1f;
-            if (k.dKey.isPressed || k.rightArrowKey.isPressed) x += 1f;
-            if (k.sKey.isPressed || k.downArrowKey.isPressed)  y -= 1f;
-            if (k.wKey.isPressed || k.upArrowKey.isPressed)    y += 1f;
+            #if ENABLE_INPUT_SYSTEM
+                    var k = Keyboard.current;
+                    if (k != null)
+                    {
+                        if (k.aKey.isPressed || k.leftArrowKey.isPressed)  x -= 1f;
+                        if (k.dKey.isPressed || k.rightArrowKey.isPressed) x += 1f;
+                        if (k.sKey.isPressed || k.downArrowKey.isPressed)  y -= 1f;
+                        if (k.wKey.isPressed || k.upArrowKey.isPressed)    y += 1f;
+                    }
+            #endif
+            #if ENABLE_LEGACY_INPUT_MANAGER
+                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  x -= 1f;
+                    if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) x += 1f;
+                    if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))  y -= 1f;
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))    y += 1f;
+            #endif
+
+                    input = new Vector2(x, y);
+                    if (normalizeDiagonal && input.sqrMagnitude > 1f) input.Normalize();
+
+                    AnimateVisual();
         }
-#endif
-#if ENABLE_LEGACY_INPUT_MANAGER
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  x -= 1f;
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) x += 1f;
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))  y -= 1f;
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))    y += 1f;
-#endif
-
-        input = new Vector2(x, y);
-        if (normalizeDiagonal && input.sqrMagnitude > 1f) input.Normalize();
-
-        AnimateVisual();
+        else
+        {
+            rb.velocity = new Vector2(0,0);
+        }
     }
 
     void FixedUpdate()
     {
-        Vector2 target = input * moveSpeed;
-        float rate = input.sqrMagnitude > 0.01f ? acceleration : deceleration;
-        velocity = Vector2.MoveTowards(velocity, target, rate * Time.fixedDeltaTime);
-        Vel = velocity;
-
-        // Only change facing when actually moving, so we don't reset to a default
-        // direction the instant the player stops.
-        if (velocity.sqrMagnitude > 0.01f)
+        if (!frozen)
         {
-            facing = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-            UpdateSprite();
+            Vector2 target = input * moveSpeed;
+            float rate = input.sqrMagnitude > 0.01f ? acceleration : deceleration;
+            velocity = Vector2.MoveTowards(velocity, target, rate * Time.fixedDeltaTime);
+            Vel = velocity;
+
+            // Only change facing when actually moving, so we don't reset to a default
+            // direction the instant the player stops.
+            if (velocity.sqrMagnitude > 0.01f)
+            {
+                facing = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+                UpdateSprite();
+            }
         }
     }
 

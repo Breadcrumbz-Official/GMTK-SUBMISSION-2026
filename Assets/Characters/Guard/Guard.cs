@@ -1,4 +1,7 @@
+using Unity.Mathematics;
+using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// A patrolling guard with a vision cone. Walks its PatrolPath by driving velocity
@@ -14,6 +17,11 @@ using UnityEngine;
 public class Guard : MonoBehaviour
 {
     [SerializeField] LevelTracker lt;
+    [SerializeField] EnemyTracker et;
+
+    private Transform tf;
+
+    private bool frozen = false;
     
     [Header("Sprites")]
     [Tooltip("Facing down / toward the camera.")]
@@ -98,6 +106,10 @@ public class Guard : MonoBehaviour
 
     [Header("Debug Mode")]
     [SerializeField] private bool getCaught;
+
+    [Header("Freeze")]
+    [SerializeField] float freezeTimeTotal = 1f;
+    float freezeTimeCurrent = 0f;
 
     Rigidbody2D rb;
     State state = State.Patrol;
@@ -184,10 +196,28 @@ public class Guard : MonoBehaviour
         UpdateSprite();
     }
 
+    void Start()
+    {
+        et.AddToList(gameObject);
+        tf = GetComponent<Transform>();
+    }
+
     void Update()
     {
         Detect();
         AnimateVisual();
+
+        if (frozen)
+        {
+            if(freezeTimeCurrent <= freezeTimeTotal)
+            {
+                freezeTimeCurrent += Time.deltaTime;
+            }
+            else
+            {
+                lt.Reset();
+            }
+        }
     }
 
     void FixedUpdate() => Tick();
@@ -299,6 +329,23 @@ public class Guard : MonoBehaviour
 
         float v = Mathf.Min(speed, dist / Time.fixedDeltaTime);
         Vel = to / dist * v;
+
+    }
+
+    public void Freeze()
+    {
+        //Vector3 pos = tf.position;
+        //quaternion rot = tf.rotation;
+
+        /*while (true)
+        {
+            tf.position = pos;
+            tf.rotation = rot;
+        }*/
+
+        //Debug.Log("frozen:     " + pos + rot);
+        frozen = true;
+
     }
 
     // ---------------------------------------------------------------- facing → sprite
