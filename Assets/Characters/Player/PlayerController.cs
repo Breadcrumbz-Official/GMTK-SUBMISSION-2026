@@ -44,6 +44,10 @@ public class PlayerController : MonoBehaviour
     float bouncePhase;
 
     public bool frozen;
+    public float freezeTimeTotal = 1f;
+    private float freezeTimeCurrent = 0f;
+
+    [SerializeField] LevelTracker lt;
 
     countdownTimer cd;
 
@@ -134,6 +138,12 @@ public class PlayerController : MonoBehaviour
         else
         {
             rb.velocity = new Vector2(0,0);
+            freezeTimeCurrent += Time.deltaTime;
+
+            if(freezeTimeCurrent > freezeTimeTotal)
+            {
+                lt.Reset();
+            }
         }
     }
 

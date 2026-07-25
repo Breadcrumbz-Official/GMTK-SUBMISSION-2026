@@ -206,18 +206,6 @@ public class Guard : MonoBehaviour
     {
         Detect();
         AnimateVisual();
-
-        if (frozen)
-        {
-            if(freezeTimeCurrent <= freezeTimeTotal)
-            {
-                freezeTimeCurrent += Time.deltaTime;
-            }
-            else
-            {
-                lt.Reset();
-            }
-        }
     }
 
     void FixedUpdate() => Tick();
@@ -332,7 +320,7 @@ public class Guard : MonoBehaviour
 
     }
 
-    public void Freeze()
+    /*public void Freeze()
     {
         //Vector3 pos = tf.position;
         //quaternion rot = tf.rotation;
@@ -344,9 +332,9 @@ public class Guard : MonoBehaviour
         }*/
 
         //Debug.Log("frozen:     " + pos + rot);
-        frozen = true;
+      //  frozen = true;
 
-    }
+    //}
 
     // ---------------------------------------------------------------- facing → sprite
 
@@ -520,7 +508,7 @@ public class Guard : MonoBehaviour
 
         if (getCaught)
         {
-            lt.GameOver(this);
+            lt.GameOver();
         }
 
     }
