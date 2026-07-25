@@ -11,17 +11,26 @@ public class GuardDoorOpen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        dh = gameObject.GetComponent<Door>();
-
-        if(dh == null)
-        {
-            sdh = gameObject.GetComponent<SideDoor>();
-        }
+        dh = gameObject.GetComponent<Door>();        
+        sdh = gameObject.GetComponent<SideDoor>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
+    void OpenDoor()
+    {
+        if(dh == null && sdh != null)
+        {
+            sdh.Toggle();
+        }
+        if(dh != null && sdh == null)
+        {
+            dh.Toggle();
+        }
+    }
+
 }

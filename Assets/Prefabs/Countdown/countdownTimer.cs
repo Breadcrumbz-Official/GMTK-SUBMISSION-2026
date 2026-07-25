@@ -72,7 +72,7 @@ public class countdownTimer : MonoBehaviour
 
                 if (timeCurrent <= 0)
                 {
-                    lt.GameOver();
+                    lt.GameOver("Time");
                 }
             }
             else
