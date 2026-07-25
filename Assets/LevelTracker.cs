@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,6 +17,8 @@ public class LevelTracker : ScriptableObject
       "Level 1",
     };
     public int levelCurrent = 0;
+
+    public string bustedReason;
 
     //public bool freeze = false;
 
@@ -50,7 +53,7 @@ public class LevelTracker : ScriptableObject
         SceneManager.LoadScene(levelSceneNames[levelCurrent-1]);
     }
 
-    public void GameOver()
+    public void GameOver(String source)
     {
         //freeze = true;
 
@@ -59,6 +62,21 @@ public class LevelTracker : ScriptableObject
 
         countdownTimer cd = FindFirstObjectByType<countdownTimer>();
         cd.freezeTime = true;
+
+        switch (source)
+        {
+            case "Camera":
+            bustedReason = "You got seen by a camera!";
+            break;
+
+            case "Guard":
+            bustedReason = "You got caught by a guard!";
+            break;
+
+            case "Time":
+            bustedReason = "You ran out of time!";
+            break;
+        }
 
         //SceneManager.LoadScene("Fail Screen");
     }

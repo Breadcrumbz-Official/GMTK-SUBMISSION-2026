@@ -375,6 +375,11 @@ public class Guard : MonoBehaviour
         nma.SetDestination(new Vector3(tx, ty, 0));
     }
 
+    public void OpenDoor()
+    {
+        //TODO
+    }
+
     /*public void Freeze()
     {
         //Vector3 pos = tf.position;
@@ -386,8 +391,8 @@ public class Guard : MonoBehaviour
             tf.rotation = rot;
         }*/
 
-        //Debug.Log("frozen:     " + pos + rot);
-      //  frozen = true;
+    //Debug.Log("frozen:     " + pos + rot);
+    //  frozen = true;
 
     //}
 
@@ -563,7 +568,7 @@ public class Guard : MonoBehaviour
 
         if (getCaught)
         {
-            lt.GameOver();
+            lt.GameOver("Guard");
         }
 
     }
