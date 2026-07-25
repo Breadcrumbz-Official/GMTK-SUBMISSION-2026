@@ -22,12 +22,11 @@ public class Breaker : MonoBehaviour
     [Tooltip("Drag in every camera this breaker controls.")]
     public SecurityCamera2D[] cameras;
 
-    [Header("Breaker parts")]
-    [Tooltip("The breaker's SpriteRenderer.")]
-    public SpriteRenderer art;
-    [Tooltip("Optional. If both are set the sprite swaps; if not, it just dims when off.")]
-    public Sprite onSprite;
-    public Sprite offSprite;
+    [Header("Breaker visuals")]
+    [Tooltip("Child object shown when powered. Has its own sprite.")]
+    public GameObject onObject;
+    [Tooltip("Child object shown when cut. Has its own sprite.")]
+    public GameObject offObject;
 
     [Header("Audio (optional)")]
     public AudioSource audioSource;
@@ -50,7 +49,7 @@ public class Breaker : MonoBehaviour
         // Hide the prompt until the player actually walks up.
         if (prompt) prompt.SetActive(false);
 
-        // Push the starting state onto the cameras and the sprite.
+        // Push the starting state onto the cameras and the visuals.
         ApplyChange();
     }
 
@@ -87,7 +86,7 @@ public class Breaker : MonoBehaviour
         }
     }
 
-    // Push the current state onto every wired camera and onto the sprite.
+    // Push the current state onto every wired camera and onto the visuals.
     void ApplyChange()
     {
         // This is the line that actually does the job.
@@ -100,13 +99,9 @@ public class Breaker : MonoBehaviour
             }
         }
 
-        if (art)
-        {
-            if (onSprite && offSprite)
-                art.sprite = isOn ? onSprite : offSprite;   // swap art
-            else
-                art.color = isOn ? Color.white : Color.grey; // no art? just dim it
-        }
+        // Show the matching object, hide the other.
+        if (onObject) onObject.SetActive(isOn);
+        if (offObject) offObject.SetActive(!isOn);
     }
 
     // Keep the prompt wording honest about what pressing E will do.

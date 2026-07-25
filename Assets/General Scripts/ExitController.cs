@@ -1,15 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExitController : MonoBehaviour
 {
-
-
     [SerializeField] LevelTracker lt;
-    //BoxCollider2D bc;
-    
-    //variables for total objectives needed and how many are currently collected
+
+    // Variables for total objectives needed and how many are currently collected.
     public int objReq;
     public int objCurrent;
 
@@ -23,54 +18,54 @@ public class ExitController : MonoBehaviour
         objReq = totalObj;
         rb.simulated = true;
         unlocked = false;
+        ApplyState();
     }
 
     public void collectObj()
     {
         objCurrent += 1;
-        if(objCurrent >= objReq)
+        if (objCurrent >= objReq)
         {
             rb.simulated = false;
-
-            Debug.Log("unlocked");
-
             unlocked = true;
-
-            //bc.isTrigger = true;
-
+            Debug.Log("unlocked");
         }
         else
         {
             rb.simulated = true;
-            Debug.Log("Fuck you");
+        }
+        ApplyState();
+    }
+
+    // Show/hide siblings based on lock state.
+    // Locked: "Open" hidden, everything else shown.
+    // Unlocked: only "Open" and "Detector" shown, everything else (incl. self) hidden.
+    void ApplyState()
+    {
+        foreach (Transform sibling in transform.parent)
+        {
+            string n = sibling.name;
+
+            if (!unlocked)
+            {
+                // Start / locked state: keep everything except Open.
+                sibling.gameObject.SetActive(n != "Open");
+            }
+            else
+            {
+                // Unlocked: keep only Open and Detector.
+                sibling.gameObject.SetActive(n == "Open" || n == "detector");
+            }
         }
     }
 
-    // Start is called before the first frame update
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        //bc = GetComponent<BoxCollider2D>();
     }
 
     void Start()
     {
         spanwExit(0);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    /*void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log(collision.tag);
-
-        if (collision.CompareTag("Player"))
-        {
-            lt.winMission();
-        }
-    }*/
 }
