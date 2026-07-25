@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca1a69b6dd5b2448a3817d4bc5e8e67, type: 3}
   m_Name: NewTracker
   m_EditorClassIdentifier: 
-  levelCurrent: 0
+  et: {fileID: 11400000, guid: f1a1b0273ff5613429b8dfc82d7cf9a9, type: 2}
+  levelCurrent: 1

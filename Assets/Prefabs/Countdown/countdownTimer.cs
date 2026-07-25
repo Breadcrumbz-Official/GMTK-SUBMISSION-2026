@@ -16,6 +16,8 @@ public class countdownTimer : MonoBehaviour
 
     private float spaceTime;
 
+    public bool start;
+
     private TextMeshProUGUI txt;
 
     public void setMaxTime(float secs)
@@ -42,7 +44,7 @@ public class countdownTimer : MonoBehaviour
     {
         setMaxTime(60);
         resetTime();
-        
+        start = false;
     }
 
     // Update is called once per frame
@@ -50,25 +52,32 @@ public class countdownTimer : MonoBehaviour
     {
         if (!freezeTime)
         {
-            spaceTime += Time.deltaTime;
+            if (start)
+            {
+                spaceTime += Time.deltaTime;
 
-            if(spaceTime >= 0.1f)
-            {
-                timeCurrent -= 1;
-                spaceTime = 0;
-            }
-            if(timeCurrent % 10 == 0)
-            {
-                txt.SetText((timeCurrent/10).ToString() + ".0");
+                if(spaceTime >= 0.1f)
+                {
+                    timeCurrent -= 1;
+                    spaceTime = 0;
+                }
+                if(timeCurrent % 10 == 0)
+                {
+                    txt.SetText((timeCurrent/10).ToString() + ".0");
+                }
+                else
+                {
+                    txt.SetText((timeCurrent/10).ToString());  
+                }
+
+                if (timeCurrent <= 0)
+                {
+                    lt.GameOver(null);
+                }
             }
             else
             {
-                txt.SetText((timeCurrent/10).ToString());  
-            }
-
-            if (timeCurrent <= 0)
-            {
-                lt.GameOver();
+                txt.SetText((timeCurrent/10).ToString() + ".0");
             }
         }
         else

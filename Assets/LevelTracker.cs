@@ -49,15 +49,12 @@ public class LevelTracker : ScriptableObject
         SceneManager.LoadScene(levelSceneNames[levelCurrent-1]);
     }
 
-    public void GameOver()
+    public void GameOver(Guard guard)
     {
         //freeze = true;
-
-        for(int i = 0; i < et.enemyList.Count; i++)
+        if(guard != null)
         {
-            Guard guardLogic = et.enemyList[i].GetComponent<Guard>();
-
-            guardLogic.Freeze();
+            guard.GetComponent<Guard>().Freeze();
         }
 
         GameObject p = GameObject.Find("Player");

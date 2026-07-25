@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     public bool frozen;
 
+    countdownTimer cd;
+
     // velocity was renamed linearVelocity in Unity 6. This works on both.
     Vector2 Vel
     {
@@ -93,6 +95,8 @@ public class PlayerController : MonoBehaviour
 
         if (visual) visualBasePos = visual.localPosition;
         UpdateSprite();
+
+        cd = FindFirstObjectByType<countdownTimer>();
     }
 
     void Start()
@@ -146,6 +150,8 @@ public class PlayerController : MonoBehaviour
             // direction the instant the player stops.
             if (velocity.sqrMagnitude > 0.01f)
             {
+                cd.start = true;
+
                 facing = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
                 UpdateSprite();
             }

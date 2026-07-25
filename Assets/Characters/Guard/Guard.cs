@@ -520,7 +520,7 @@ public class Guard : MonoBehaviour
 
         if (getCaught)
         {
-            lt.GameOver();
+            lt.GameOver(this);
         }
 
     }
