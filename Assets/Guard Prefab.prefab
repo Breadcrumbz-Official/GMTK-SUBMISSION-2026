@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lt: {fileID: 11400000, guid: e017a46ac822ed149b72d51883f0b190, type: 2}
+  et: {fileID: 11400000, guid: f1a1b0273ff5613429b8dfc82d7cf9a9, type: 2}
   frontSprite: {fileID: 21300000, guid: 56d464843b92de546a523263f7db0b24, type: 3}
   backSprite: {fileID: 21300000, guid: 86b9106408b4e29408f02a0f2c0d24b4, type: 3}
   sideSprite: {fileID: 21300000, guid: 86238041b40e6e1428244e74eefc8c69, type: 3}

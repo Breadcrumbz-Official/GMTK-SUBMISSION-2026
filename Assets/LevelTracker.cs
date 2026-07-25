@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 [CreateAssetMenu(fileName = "NewTracker", menuName = "testmenu")]
 public class LevelTracker : ScriptableObject
 {
 
+    [SerializeField] EnemyTracker et;
 
     private string[] levelSceneNames =
     {
       "level 1"
     };
     public int levelCurrent = 0;
+
+    //public bool freeze = false;
 
     public void winMission()
     {
@@ -40,10 +44,29 @@ public class LevelTracker : ScriptableObject
 
     public void previewToLevel()
     {
+
+
         SceneManager.LoadScene(levelSceneNames[levelCurrent-1]);
     }
 
-    public void GameOver()
+    public void GameOver(Guard guard)
+    {
+        //freeze = true;
+        if(guard != null)
+        {
+            guard.GetComponent<Guard>().Freeze();
+        }
+
+        GameObject p = GameObject.Find("Player");
+        p.GetComponent<PlayerController>().frozen = true;
+
+        countdownTimer cd = FindFirstObjectByType<countdownTimer>();
+        cd.freezeTime = true;
+
+        //SceneManager.LoadScene("Fail Screen");
+    }
+
+    public void Reset()
     {
         SceneManager.LoadScene("Fail Screen");
     }

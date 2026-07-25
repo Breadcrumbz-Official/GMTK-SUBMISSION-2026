@@ -118,7 +118,7 @@ public class SecurityCamera2D : MonoBehaviour
             Debug.Log(name + " spotted the player.", this);
              // TODO
 
-            lt.GameOver(); 
+            lt.GameOver(null); 
         }
     }
 

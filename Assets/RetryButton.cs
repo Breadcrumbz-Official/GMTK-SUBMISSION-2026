@@ -1,19 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class TitleLevelReset : MonoBehaviour
+public class RetryButton : MonoBehaviour
 {
-
     [SerializeField] LevelTracker lt;
-    [SerializeField] EnemyTracker et;
+    [SerializeField] Button rb;
+
+
+    void Awake()
+    {
+        rb.onClick.AddListener(Retry);
+    }
+
+    void Retry()
+    {
+        lt.showPreview();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        lt.levelCurrent = 0;
-        et.enemyList.Clear();
-
+        
     }
 
     // Update is called once per frame
