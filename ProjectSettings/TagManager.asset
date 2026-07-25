@@ -53,6 +53,9 @@ TagManager:
   - name: Player
     uniqueID: 1149793781
     locked: 0
+  - name: Ceiling
+    uniqueID: 2351363191
+    locked: 0
   - name: Interactables
     uniqueID: 738073243
     locked: 0
