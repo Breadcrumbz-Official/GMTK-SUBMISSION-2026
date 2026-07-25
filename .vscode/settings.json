@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "GMTK-SUBMISSION-2026.sln"
+    "dotnet.defaultSolution": "GMTK2026.sln"
 }
