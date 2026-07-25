@@ -34,6 +34,22 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How fast the wobble settles back to neutral when you stop.")]
     public float bounceSettle = 12f;
 
+    [Header("Footsteps")]
+    [Tooltip("Play footstep sounds while walking.")]
+    public bool footstepsEnabled = true;
+    [Tooltip("Clips to pick from. One is chosen at random per step.")]
+    public AudioClip[] footstepClips;
+    [Tooltip("AudioSource to play through. Leave empty to auto-create one.")]
+    public AudioSource footstepSource;
+    [Tooltip("Base volume for each step.")]
+    [Range(0f, 1f)] public float footstepVolume = 0.7f;
+    [Tooltip("Random pitch wiggle so repeats don't sound identical. 0 = off.")]
+    public float footstepPitchJitter = 0.08f;
+    [Tooltip("Steps taken per second at full walking speed. Scales down when moving slower.")]
+    public float stepsPerSecond = 2f;
+    [Tooltip("Sync steps to the walk bounce peaks instead of a fixed timer. Needs a Visual child.")]
+    public bool syncStepsToBounce = true;
+
     Rigidbody2D rb;
     Vector2 input;
     Vector2 velocity;
@@ -42,6 +58,10 @@ public class PlayerController : MonoBehaviour
     Vector3 visualBasePos;   // resting local position of the visual
     float facing = -90f;     // math angle, start facing down
     float bouncePhase;
+
+    float stepTimer;         // fixed-timer fallback accumulator
+    int lastStepClip = -1;   // avoids playing the same clip twice in a row
+    float lastBounceSin;     // for detecting bounce peak crossings
 
     public bool frozen;
     public float freezeTimeTotal = 1f;
@@ -100,6 +120,18 @@ public class PlayerController : MonoBehaviour
         if (visual) visualBasePos = visual.localPosition;
         UpdateSprite();
 
+        // Grab or create an AudioSource for footsteps.
+        if (footstepsEnabled && !footstepSource)
+        {
+            footstepSource = GetComponent<AudioSource>();
+            if (!footstepSource) footstepSource = gameObject.AddComponent<AudioSource>();
+        }
+        if (footstepSource)
+        {
+            footstepSource.playOnAwake = false;
+            footstepSource.loop = false;
+        }
+
         cd = FindFirstObjectByType<countdownTimer>();
     }
 
@@ -134,6 +166,7 @@ public class PlayerController : MonoBehaviour
                     if (normalizeDiagonal && input.sqrMagnitude > 1f) input.Normalize();
 
                     AnimateVisual();
+                    UpdateFootsteps();
         }
         else
         {
@@ -230,6 +263,61 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Abs(Mathf.DeltaAngle(visual.localEulerAngles.z, 0f)) < 0.1f)
                 bouncePhase = 0f;   // reset so the next walk starts from neutral
         }
+    }
+
+    // ---------------------------------------------------------------- footsteps
+
+    void UpdateFootsteps()
+    {
+        if (!footstepsEnabled || footstepSource == null || footstepClips == null || footstepClips.Length == 0)
+            return;
+
+        bool walking = velocity.sqrMagnitude > 0.04f;
+
+        if (!walking)
+        {
+            // Reset timers/peak tracking so the first step after stopping lands cleanly.
+            stepTimer = 0f;
+            lastBounceSin = 0f;
+            return;
+        }
+
+        if (syncStepsToBounce && bounceWhileWalking && visual)
+        {
+            // A foot plants at each side of the sway — i.e. when sin() reaches ±1,
+            // which is where it changes direction. Detect that turnaround.
+            float s = Mathf.Sin(bouncePhase);
+            bool peak = (s >= 0.99f && lastBounceSin < 0.99f) ||
+                        (s <= -0.99f && lastBounceSin > -0.99f);
+            lastBounceSin = s;
+            if (peak) PlayFootstep();
+        }
+        else
+        {
+            // Fixed timer, scaled by how fast we're actually moving.
+            float speed01 = Mathf.Clamp01(velocity.magnitude / Mathf.Max(0.01f, moveSpeed));
+            stepTimer += Time.deltaTime * stepsPerSecond * speed01;
+            if (stepTimer >= 1f)
+            {
+                stepTimer -= 1f;
+                PlayFootstep();
+            }
+        }
+    }
+
+    void PlayFootstep()
+    {
+        // Pick a random clip, avoiding an immediate repeat when there's more than one.
+        int i = Random.Range(0, footstepClips.Length);
+        if (footstepClips.Length > 1 && i == lastStepClip)
+            i = (i + 1) % footstepClips.Length;
+        lastStepClip = i;
+
+        AudioClip clip = footstepClips[i];
+        if (!clip) return;
+
+        footstepSource.pitch = 1f + Random.Range(-footstepPitchJitter, footstepPitchJitter);
+        footstepSource.PlayOneShot(clip, footstepVolume);
     }
 
     /// <summary>True world-space velocity, useful for animator params.</summary>
