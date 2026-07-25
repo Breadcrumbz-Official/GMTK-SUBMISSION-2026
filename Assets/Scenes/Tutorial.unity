@@ -25450,6 +25450,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1983780049}
     - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
+      propertyPath: range
+      value: 3.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 322766068}
@@ -25582,6 +25586,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
+      propertyPath: path
+      value: 
+      objectReference: {fileID: 2064769568}
     - target: {fileID: 8237611691234802690, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
       propertyPath: m_Name
       value: Guard Prefab (3)
@@ -26018,11 +26026,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[0].x
-      value: 8.491049
+      value: 8.438582
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[0].y
-      value: 2.975061
+      value: 3.0974808
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[1].x
@@ -26034,19 +26042,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[2].x
-      value: 14.49506
+      value: 14.471017
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[2].y
-      value: -5.3247957
+      value: -5.1484795
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[3].x
-      value: 8.500405
+      value: 8.439924
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[3].y
-      value: -5.349824
+      value: -5.0693207
       objectReference: {fileID: 0}
     - target: {fileID: 7695349147355958897, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: m_Name
@@ -26505,6 +26513,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Countdown
       objectReference: {fileID: 0}
+    - target: {fileID: 1244036870928494415, guid: 0c1c8b8985a74fc48af6420ec8853a1c, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 1896943218}
     - target: {fileID: 4330567073594154103, guid: 0c1c8b8985a74fc48af6420ec8853a1c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -26545,11 +26557,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8266722974828380039, guid: 0c1c8b8985a74fc48af6420ec8853a1c, type: 3}
+      propertyPath: start
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c1c8b8985a74fc48af6420ec8853a1c, type: 3}
+--- !u!20 &1896943218 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 1966592321874594258, guid: 9789b8aaa8030c64fa3088b7b0842e18, type: 3}
+  m_PrefabInstance: {fileID: 2060039196}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1983780049 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
@@ -26633,6 +26654,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9789b8aaa8030c64fa3088b7b0842e18, type: 3}
+--- !u!114 &2064769568 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
+  m_PrefabInstance: {fileID: 1679166572}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cc1607714753b4da49edac7d805f4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5732775132724314337
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26641,6 +26673,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3638655095720156381, guid: 1577098d1dd7d894f84d772330f43c43, type: 3}
+      propertyPath: objReq
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3844542457707194472, guid: 1577098d1dd7d894f84d772330f43c43, type: 3}
       propertyPath: m_Name
       value: Exit Door
