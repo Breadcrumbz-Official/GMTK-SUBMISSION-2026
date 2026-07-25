@@ -30949,6 +30949,10 @@ PrefabInstance:
       propertyPath: playerBody
       value: 
       objectReference: {fileID: 1758132727}
+    - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 8237611691234802690, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
       propertyPath: m_Name
       value: Guard Prefab
@@ -31314,11 +31318,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[3].x
-      value: -9.729681
+      value: -9.837484
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[3].y
-      value: 5.9643025
+      value: 6.118307
       objectReference: {fileID: 0}
     - target: {fileID: 7695349147355958897, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: m_Name
