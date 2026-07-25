@@ -12,7 +12,8 @@ public class LevelTracker : ScriptableObject
 
     private string[] levelSceneNames =
     {
-      "level 1"
+      "Tutorial",
+      "Level 1",
     };
     public int levelCurrent = 0;
 
