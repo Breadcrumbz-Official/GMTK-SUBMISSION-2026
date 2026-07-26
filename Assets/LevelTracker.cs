@@ -11,7 +11,7 @@ public class LevelTracker : ScriptableObject
 
     [SerializeField] EnemyTracker et;
 
-    private string[] levelSceneNames =
+    [SerializeField] private string[] levelSceneNames =
     {
       "Tutorial",
       "level 1",
