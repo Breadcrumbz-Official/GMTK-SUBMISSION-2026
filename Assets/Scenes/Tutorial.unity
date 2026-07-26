@@ -239,6 +239,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Breaker Prefab (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6291753872318709774, guid: c4b831a993c22a040bae6c7cc9377247, type: 3}
+      propertyPath: m_SortingLayer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291753872318709774, guid: c4b831a993c22a040bae6c7cc9377247, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291753872318709774, guid: c4b831a993c22a040bae6c7cc9377247, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 738073243
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
