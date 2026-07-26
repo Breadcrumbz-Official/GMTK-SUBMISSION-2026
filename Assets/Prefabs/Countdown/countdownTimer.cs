@@ -53,15 +53,14 @@ public class countdownTimer : MonoBehaviour
             break;
 
             case 3:
-            setMaxTime(60);
+            setMaxTime(90);
             break;
             
             case 4:
-            setMaxTime(60);
+            setMaxTime(120);
             break;
         }
 
-        setMaxTime(60);
         resetTime();
         start = false;
     }
