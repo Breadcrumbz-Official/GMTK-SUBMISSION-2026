@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 738073243
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 08dd848cd1f6dab48993131e2f53641c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -157,7 +157,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 738073243
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -201,5 +201,5 @@ MonoBehaviour:
   clearColor: {r: 0.25, g: 1, b: 0.45, a: 0.13}
   alertColor: {r: 1, g: 0.25, b: 0.2, a: 0.28}
   coneSortingOrder: -10
-  getCaught: 0
+  getCaught: 1
   isOn: 1
