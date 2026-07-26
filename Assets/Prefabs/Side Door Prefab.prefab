@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8529562287455320870}
   m_Layer: 6
   m_Name: Side Door Prefab
-  m_TagString: Untagged
+  m_TagString: side_door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

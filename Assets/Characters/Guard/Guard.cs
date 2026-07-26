@@ -573,6 +573,20 @@ public class Guard : MonoBehaviour
 
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("door"))
+        {
+            collision.gameObject.GetComponent<Door>().Toggle();
+        }
+
+        
+        if (collision.gameObject.CompareTag("side_door"))
+        {
+            collision.gameObject.GetComponent<SideDoor>().Toggle();
+        }
+    }
+
     float ComputeVisibleFraction()
     {
         int count = BuildSamplePoints();
