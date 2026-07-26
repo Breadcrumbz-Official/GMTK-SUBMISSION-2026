@@ -616,6 +616,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1102983496}
   - component: {fileID: 1102983495}
+  - component: {fileID: 1102983497}
   m_Layer: 0
   m_Name: tutorial_blueprint
   m_TagString: Untagged
@@ -664,7 +665,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f48920b7a3835a34082e424a2e071361, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ae6c82effb98107498cf00e1cc69738b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -690,6 +691,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1102983497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102983494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8a8b7eedc6ff884992396472b483d6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blueprints:
+  - {fileID: 21300000, guid: ae6c82effb98107498cf00e1cc69738b, type: 3}
+  - {fileID: 21300000, guid: 10f71e0b664e9024985ae59e767d8102, type: 3}
+  lt: {fileID: 11400000, guid: e017a46ac822ed149b72d51883f0b190, type: 2}
 --- !u!1 &1220020540
 GameObject:
   m_ObjectHideFlags: 0
@@ -1599,3 +1616,4 @@ SceneRoots:
   - {fileID: 1593675048}
   - {fileID: 100949535}
   - {fileID: 1102983496}
+  - {fileID: 863750344}
