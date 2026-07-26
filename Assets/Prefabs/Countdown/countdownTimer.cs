@@ -42,6 +42,25 @@ public class countdownTimer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        switch (lt.levelCurrent)
+        {
+            case 1:
+            setMaxTime(60);
+            break;
+
+            case 2:
+            setMaxTime(60);
+            break;
+
+            case 3:
+            setMaxTime(60);
+            break;
+            
+            case 4:
+            setMaxTime(60);
+            break;
+        }
+
         setMaxTime(60);
         resetTime();
         start = false;
