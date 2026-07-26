@@ -19,9 +19,10 @@ public class LevelTitles : MonoBehaviour
     public string l4tit = "";
     */
     public string[] tits = {
-    "Small Time",
-    "",
-    ""
+    "Tutorial",
+    "Baby Museum",
+    "Corporate Secrets",
+    "Big Bad Cash (BBC)",
     };
 
 
