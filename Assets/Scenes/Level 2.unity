@@ -136,11 +136,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[0].x
-      value: -7.2257795
+      value: -7.2525816
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[0].y
-      value: -2.4677446
+      value: -2.4677448
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[1].x
@@ -28706,9 +28706,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 38751633}
     - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
+      propertyPath: range
+      value: 3.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1412003209}
+    - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
+      propertyPath: fovAngle
+      value: 42
+      objectReference: {fileID: 0}
     - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
       propertyPath: playerBody
       value: 
@@ -29132,6 +29140,10 @@ PrefabInstance:
       propertyPath: path
       value: 
       objectReference: {fileID: 346594462}
+    - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
+      propertyPath: range
+      value: 4.02
+      objectReference: {fileID: 0}
     - target: {fileID: 7383961567177420704, guid: 13d7addaba31d4044bec8da179b34c5d, type: 3}
       propertyPath: player
       value: 

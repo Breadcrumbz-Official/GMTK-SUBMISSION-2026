@@ -26215,11 +26215,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[1].x
-      value: -13.946986
+      value: -14.271812
       objectReference: {fileID: 0}
     - target: {fileID: 3768526893358402269, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: points.Array.data[1].y
-      value: 3.031515
+      value: 3.0315151
       objectReference: {fileID: 0}
     - target: {fileID: 7695349147355958897, guid: 1d7d6a7ae84c80e4aa696ba6e2f0529c, type: 3}
       propertyPath: m_Name
