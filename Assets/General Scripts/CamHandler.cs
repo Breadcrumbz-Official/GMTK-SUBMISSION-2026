@@ -26,6 +26,12 @@ public class SecurityCamera2D : MonoBehaviour
     [Tooltip("Nudges the eye point off the object's origin, e.g. to a lens on the front.")]
     public Vector2 eyeOffset = Vector2.zero;
 
+    [Header("On/Off visuals")]
+    [Tooltip("Child shown while powered. Leave empty to auto-find a child named 'On'.")]
+    public GameObject onObject;
+    [Tooltip("Child shown while cut. Leave empty to auto-find a child named 'Off'.")]
+    public GameObject offObject;
+
     [Header("Detection")]
     [Tooltip("Body is sampled on an N x N grid. 3 = 9 sample points, plenty for a small sprite.")]
     [Range(2, 6)] public int samplesPerAxis = 3;
@@ -55,6 +61,7 @@ public class SecurityCamera2D : MonoBehaviour
     float timer;
     bool fired;
     public bool isOn = true;
+    bool lastIsOn;   // tracks isOn so we only re-toggle the child sprites on a change
 
     // Scratch buffers, allocated once so Update() never generates garbage.
     readonly Vector2[] samples = new Vector2[36];
@@ -77,10 +84,25 @@ public class SecurityCamera2D : MonoBehaviour
         }
         if (!playerBody && player) playerBody = player.GetComponentInChildren<Collider2D>();
         if (!player) Debug.LogWarning(name + ": no player found. Tag your player 'Player'.", this);
+
+        // Grab the On/Off children by name if they weren't assigned in the inspector.
+        if (!onObject)  { Transform t = transform.Find("On");  if (t) onObject  = t.gameObject; }
+        if (!offObject) { Transform t = transform.Find("Off"); if (t) offObject = t.gameObject; }
+
+        // Push the starting power state onto the sprites.
+        ApplyPowerVisual();
+        lastIsOn = isOn;
     }
 
     void Update()
     {
+        // React to the breaker (or anything) flipping isOn, without needing to be told.
+        if (isOn != lastIsOn)
+        {
+            ApplyPowerVisual();
+            lastIsOn = isOn;
+        }
+
         if (isOn)
         {
             if (!player) return;
@@ -105,6 +127,21 @@ public class SecurityCamera2D : MonoBehaviour
 
             UpdateConeMesh();
         }
+        else
+        {
+            // Powered down: no detection, and hide the cone.
+            Spotted = false;
+            timer = 0f;
+            if (coneGO) coneGO.SetActive(false);
+        }
+    }
+
+    // Show the On child while powered, the Off child while cut. Hide the cone if off.
+    void ApplyPowerVisual()
+    {
+        if (onObject)  onObject.SetActive(isOn);
+        if (offObject) offObject.SetActive(!isOn);
+        if (!isOn && coneGO) coneGO.SetActive(false);
     }
 
     /// <summary>
