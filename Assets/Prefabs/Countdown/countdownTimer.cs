@@ -57,7 +57,7 @@ public class countdownTimer : MonoBehaviour
             break;
             
             case 4:
-            setMaxTime(120);
+            setMaxTime(180);
             break;
         }
 
